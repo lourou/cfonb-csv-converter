@@ -9,7 +9,7 @@ national body responsible for the French codification in banking activities).
 ## Usage
 
 ```
-./cfonb-csv.sh [option...] input_file [output_file]
+./cfonbcsv.php [option...] input_file [output_file]
 ```
 
 If `output_file` is not specified, a name is generated programmatically
