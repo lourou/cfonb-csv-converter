@@ -10,11 +10,13 @@ class CfonbDataParser
         if (file_exists($file) && is_readable($file)) {
             $content      = file($file);
             $clean_data   = $this->getCleanData($content);
+            
             return print_r($clean_data, 1);
         }
     }
 
     public function getCleanData($content) {
+        $transactions = array();
         foreach ($content as $raw_line) {
             // Split the line of text every space
             $line = explode(' ', $raw_line);
@@ -26,12 +28,13 @@ class CfonbDataParser
             print strpos($line[0], '2');
 
             // Read 2 first two chars, determine register_code
-            // @todo
+            $transaction['register_code'] = substr($line[0], 0, 2);
 
-            return;
+            // Add transaction to transactions array
+            $transactions[] = $transaction;
         }
 
-        //return $line;
+        return $transactions;
     }
 
     protected function removeEmptyArrayItems($line) {
