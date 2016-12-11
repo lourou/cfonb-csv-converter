@@ -3,7 +3,7 @@
 This will convert a CFONB bank statement to a CSV file that you may
 import Zoho Books or another accounting software.
 
-CFONB stands for "Comite Francais d'Organisaton et de Normalisation Bancaires",
+CFONB stands for "Comite Francais d'Organisation et de Normalisation Bancaires",
 national body responsible for the French codification in banking activities).
 
 ## Usage
