@@ -6,10 +6,16 @@ import Zoho Books or another accounting software.
 CFONB stands for "Comite Francais d'Organisation et de Normalisation Bancaires",
 national body responsible for the French codification in banking activities).
 
+## Install
+
+```
+composer install
+```
+
 ## Usage
 
 ```
-./cfonbcsv.php [option...] input_file [output_file]
+php cfonbcsv.php [option...] input_file [output_file]
 ```
 
 If `output_file` is not specified, a name is generated programmatically
