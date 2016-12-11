@@ -12,6 +12,7 @@
 namespace CfonbParser;
 
 use Carbon\Carbon;
+use Exception;
 
 class CfonbParser
 {
@@ -26,7 +27,31 @@ class CfonbParser
             $content      = file($file);
             $clean_data   = $this->getCleanData($content);
             return $clean_data;
+        }else{
+            throw new Exception("Cannot open input file.", 1);
         }
+    }
+
+    /**
+     * Convert to CSV
+     *
+     * @return string
+     */
+    public function convertToCSV($data) {
+        $csv_data[] = array('Date', 'Withdrawals', 'Deposits', 'Payee', 'Description', 'Reference Number');
+        foreach ($data as $item) {
+            if($item['register_code'] == '04'){
+                $csv_data[] = array(
+                    'Date'             => $item['date'],
+                    'Withdrawals'      => number_format($item['withdrawal']/100, 2, '.', ''),
+                    'Deposits'         => number_format($item['deposit']/100, 2, '.', ''),
+                    'Payee'            => '',
+                    'Description'      => $item['name'],
+                    'Reference Number' => substr($item['description'], 0, 100),
+                );
+            }
+        }
+        return $csv_data;
     }
 
     /**
@@ -37,7 +62,7 @@ class CfonbParser
     public function getCleanData($content) {
         // Init
         $transactions = array();
-        $content[] =  array();
+        $content[] = '';
         
         // Loop
         foreach ($content as $raw_line) {
@@ -66,6 +91,9 @@ class CfonbParser
                     $transaction['date']           = $this->convertDate($line[3], 'date'); 
                     $transaction['encoded_amount'] = $line[4];
                     $transaction['amount']         = $this->convertAmount($line[4], $register_code);
+                    $transaction['deposit']        = 0;
+                    $transaction['withdrawal']     = 0;
+                    $transaction['description']    = '';
                     break;
 
                 // New transaction item
@@ -83,6 +111,7 @@ class CfonbParser
                     }else{
                         $transaction['deposit']     = 0;
                         $transaction['withdrawal']  = $transaction['amount'];
+                        $transaction['amount']      = -1 * abs($transaction['amount']);
                     }
                     break;
 
@@ -96,11 +125,12 @@ class CfonbParser
             }
         }
 
-        // @todo check bank statement integrity
-        // initial balance + transactions = final balance
-        // exception if needed
-
-        return $transactions;
+        // Integrity check
+        if($this->checkIntegrity($transactions)){
+            return $transactions;
+        }else{
+            throw new Exception("Integrity Test Failed.", 1);
+        }
     }
 
     /**
@@ -204,6 +234,29 @@ class CfonbParser
         $converted_amount = $trunk . $ctable[$key];
         
         return $converted_amount;
+    }
+
+    /**
+     * Check transactions integrity
+     *
+     * @return string
+     */
+    public function checkIntegrity($transactions) {
+        foreach ($transactions as $transaction) {
+            // As soon as we reach a 07 register_code, check integrity of previous items
+            if($transaction['register_code'] == '07'){
+                if($transaction['amount'] == $sum){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            if(isset($transaction['amount'])){
+                $sum += $transaction['amount'];
+            }else{
+                return false;
+            }
+        }
     }
 
 }

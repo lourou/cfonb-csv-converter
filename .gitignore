@@ -3,3 +3,4 @@ files
 !.gitkeep
 vendor
 composer.lock
+*.csv

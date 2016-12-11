@@ -1,6 +1,6 @@
 # CFONB to CSV Converter
 
-This will convert a CFONB bank statement to a CSV file that you may
+This will convert a CFONB bank statement from HSBC France to a CSV file that you may
 import Zoho Books or another accounting software.
 
 CFONB stands for "Comite Francais d'Organisation et de Normalisation Bancaires",
@@ -15,13 +15,10 @@ composer install
 ## Usage
 
 ```
-php cfonbcsv.php [option...] input_file [output_file]
+php cfonbcsv.php [option...] input_file output_file
 ```
 
-If `output_file` is not specified, a name is generated programmatically
-and the file is written into the same directory as `input_file`.
-
-Help options:
+Options:
 
     { -t }
         test file but does not convert it
