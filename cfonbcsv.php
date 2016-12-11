@@ -6,8 +6,15 @@ require 'cfonbparser/cfonbparser.php';
 use Carbon\Carbon;
 use CfonbParser\CfonbParser;
 
-//$file   = 'files/RlvCompte_010816.txt';
-//$file   = 'files/releve.ccf';
+// $file   = 'files/RlvCompte_010816.txt';
 
-$parser = new CfonbParser;
-$parser->parse($file);
+try {
+    $parser = new CfonbParser;
+    $data   = $parser->parse($file);
+} catch (Exception $e) {
+    echo 'Error: ',  $e->getMessage(), "\n";
+}
+
+if($data){
+    // Do something with the data
+}
